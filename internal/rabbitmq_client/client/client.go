@@ -225,7 +225,7 @@ func (r *RabbitmqClient) Iterator() (<-chan types.RabbitmqMessage, error) {
 	return r.chManager.Iterator()
 }
 
-func (r *RabbitmqClient) SessionKeepRequest(ctx context.Context, sendQueue string, payload map[string]interface{}) (types.RabbitmqMessage, error) {
+func (r *RabbitmqClient) SessionKeepRequest(ctx context.Context, sendQueue string, payload interface{}) (types.RabbitmqMessage, error) {
 	if ctx == nil {
 		ctx, _ = context.WithTimeout(context.Background(), 30*time.Second)
 	}

@@ -122,8 +122,6 @@ func (m *RabbitmqChannelManager) Iterator() (<-chan types.RabbitmqMessage, error
 				msg, err := message.NewRabbitmqMessage(d, m.queueFrom, m)
 				if err != nil {
 					log.Printf("[RabbitmqClient] failed to parse as json: %v", err)
-					d.Nack(false, false)
-					return
 				}
 
 				m.iteratorCh <- msg
@@ -168,10 +166,11 @@ func (m *RabbitmqChannelManager) Close() error {
 	return nil
 }
 
-func (m *RabbitmqChannelManager) Send(sendQueue string, payload map[string]interface{}, messageID string, correlationID string, replyTo string) error {
+func (m *RabbitmqChannelManager) Send(sendQueue string, payload interface{}, messageID string, correlationID string, replyTo string) error {
 	jsonData, err := json.Marshal(payload)
 	if err != nil {
-		return fmt.Errorf("failed to marshal json: %w", err)
+		log.Printf("failed to marshal json: %+v", err)
+		jsonData = []byte(fmt.Sprintf("%v", payload))
 	}
 
 	err = m.channel.Publish(

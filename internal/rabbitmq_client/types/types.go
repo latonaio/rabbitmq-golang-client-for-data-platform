@@ -34,8 +34,10 @@ type RabbitmqMessage interface {
 	QueueName() string
 	// Data は、メッセージのペイロードを取得します。
 	Data() map[string]interface{}
+	// Raw は、メッセージのペイロードを取得します。
+	Raw() []byte
 	// Respond は、レスポンスメッセージを送信します。
-	Respond(payload map[string]interface{}) error
+	Respond(payload interface{}) error
 	// Success は、メッセージ処理の成功応答を返します。
 	Success() error
 	// Fail は、メッセージ処理の失敗応答を返します。

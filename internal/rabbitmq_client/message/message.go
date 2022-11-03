@@ -10,7 +10,7 @@ import (
 )
 
 type rabbitmqChannelManager interface {
-	Send(sendQueue string, payload map[string]interface{}, messageID string, correlationID string, replyTo string) error
+	Send(sendQueue string, payload interface{}, messageID string, correlationID string, replyTo string) error
 }
 
 type rabbitmqMessage struct {
@@ -34,7 +34,7 @@ func decodeJSON(body []byte) (map[string]interface{}, error) {
 func NewRabbitmqMessage(d amqp.Delivery, queueName string, chManager rabbitmqChannelManager) (types.RabbitmqMessage, error) {
 	jsonData, err := decodeJSON(d.Body)
 	if err != nil {
-		return nil, err
+		jsonData = nil
 	}
 
 	return &rabbitmqMessage{data: jsonData, message: d, chManager: chManager}, nil
@@ -48,7 +48,7 @@ func (m *rabbitmqMessage) Data() map[string]interface{} {
 	return m.data
 }
 
-func (m *rabbitmqMessage) Respond(payload map[string]interface{}) error {
+func (m *rabbitmqMessage) Respond(payload interface{}) error {
 	if m.isResponded {
 		log.Println("[WARNING] already responded")
 		return nil
@@ -102,4 +102,7 @@ func (m *rabbitmqMessage) MessageID() string {
 
 func (m *rabbitmqMessage) CorrelationID() string {
 	return m.message.CorrelationId
+}
+func (m *rabbitmqMessage) Raw() []byte {
+	return m.message.Body
 }
