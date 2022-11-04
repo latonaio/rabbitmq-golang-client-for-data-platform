@@ -78,8 +78,10 @@ func NewRabbitmqClient(url, queueFrom, queueFromResponse string, queueTo []strin
 		queues[queueFromResponse] = struct{}{}
 	}
 	for _, queue := range queueTo {
-		sendQueues[queue] = struct{}{}
-		queues[queue] = struct{}{}
+		if queue != "" {
+			sendQueues[queue] = struct{}{}
+			queues[queue] = struct{}{}
+		}
 	}
 
 	for queue := range queues {
