@@ -250,6 +250,6 @@ func (r *RabbitmqClient) SessionKeepRequest(ctx context.Context, sendQueue strin
 	}
 }
 
-func (r *RabbitmqClient) Send(sendQueue string, payload map[string]interface{}) error {
+func (r *RabbitmqClient) Send(sendQueue string, payload interface{}) error {
 	return r.chManager.Send(sendQueue, payload, "", "", "")
 }
